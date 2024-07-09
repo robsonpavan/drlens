@@ -3,7 +3,7 @@
         'name' => 'robasonpavan/drvlens',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '5da9fe5951ca13044ab387b03eb14ce4851876a9',
+        'reference' => '7ddf0763fb0289d9f5d4d23ddafe0366c8a58d2b',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -124,7 +124,7 @@
         'robasonpavan/drvlens' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '5da9fe5951ca13044ab387b03eb14ce4851876a9',
+            'reference' => '7ddf0763fb0289d9f5d4d23ddafe0366c8a58d2b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

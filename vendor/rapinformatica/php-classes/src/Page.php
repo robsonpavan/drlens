@@ -23,17 +23,17 @@ class Page {
 
     //Metodo (mágico) construtor - A variável $opts é um array que vai receber as opções configuração específicas de cada rota configurada 
     //e o diretório tpl para diferenciar os templates do site e interface de administração
-    public function __construct($opts = array()){
+    public function __construct($opts = array(), $tpl_dir = "/views/"){
 
         $this->options = array_merge($this->defaults, $opts);
 
         $config = array(
-            "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/views/",
+            "tpl_dir"       => $_SERVER['DOCUMENT_ROOT'].$tpl_dir,
             "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/views-cache/",
-            "debug"         => false // set to false to improve the speed
+            "debug"         => true // set to false to improve the speed
         );
 
-        Tpl::configure( $config );
+        Tpl::configure($config);
 
         $this->tpl = new Tpl;
 
