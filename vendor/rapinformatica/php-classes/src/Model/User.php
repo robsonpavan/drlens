@@ -115,18 +115,6 @@ class User extends Model
     public static function verifyLogin($inadmin = true){
         
         //If pra testar se o usuário está logado ou não
-        //Código aontigo mantido pelas explicações/exemplos de teste de validação de login de usuários via sessão
-        /*
-        if(
-            !isset($_SESSION[User::SESSION]) //Verificando se existe a Session com a constante session ou não (se a sessão não foi criada/  definida)
-            ||
-            !$_SESSION[User::SESSION] //Verificando se a sessão, apesar de existe, não está vazia
-            ||
-            !(int)$_SESSION[User::SESSION]["iduser"] > 0 //Verificar o Id do usuário, converte o id carregado na sessão para inteiro,
-            ||                                           // se o id for vazio transforma em zero em seguida basta testar se o id é maior que zero para verificar se há um id válido ou não           
-            (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin //Verificando se o usuário se logou para acessar a área de administração (se o usuário é administrador logado na área de administração)
-                                                                   //Verifica se o atributo inadmin é true ou não, se for false o usuário não tem privilégios administrativos
-        )//{*/        
         if (!User::checkLogin($inadmin))
         {   
             //Redirecionando para teala de login
