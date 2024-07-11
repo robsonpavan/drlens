@@ -12,8 +12,11 @@ class User extends Model
     //Constante definida para configurar o nome da sessão
     const SESSION = "User";
     //Constantes criadas para criptografar a cgave de recovery gerada para troca de senha (forgot)
-    const SECRET = "HcodePhp7_Secret";
-    const SECRET_IV = "HcodePhp7_Secret_IV";
+    const SECRET = "RAPInformatica_Secret";
+    const SECRET_IV = "RAPInformatica_Secret_IV";
+
+    //Constante com URL do site para envio de troca de senha
+    const URL_SITE = "https://drlen.com.br/admin/forgot/reset";
 
     //Metodo para verificar se o usuário existe na sessão se o ID não é nulo
     public static function getFromSession()
@@ -219,7 +222,7 @@ class User extends Model
             ":email"=>$email
         ));
         
-        //Testando se o e-,ail indormado foi encontrado
+        //Testando se o e-mail indormado foi encontrado
         if(count($results) === 0){
             
             //E-mail não foi encontrado retornando mensagem de erro
@@ -251,9 +254,9 @@ class User extends Model
                 $code = base64_encode($code);
                                
                 //Preparando link a ser enviado por e-mail para que o usuário possa alterar sua senha
-                $link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
+                $link = User::URL_SITE."?code=$code";
                 
-                $mailer = new Mailer($data["desemail"], $data["desperson"],"Redefinie senha na Robson Store", "forgot", array(
+                $mailer = new Mailer($data["desemail"], $data["desperson"],"Redefinie senha na DrLEns", "forgot", array(
                     "name"=>$data["desperson"],
                     "link"=>$link
                 ));
