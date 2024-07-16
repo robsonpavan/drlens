@@ -16,7 +16,8 @@ class User extends Model
     const SECRET_IV = "RAPInformatica_Secret_IV";
 
     //Constante com URL do site para envio de troca de senha
-    const URL_SITE = "https://drlen.com.br/admin/forgot/reset";
+    //const URL_SITE = "https://drlen.com.br/admin/forgot/reset";
+    const URL_SITE = "https://localhost/admin/forgot/reset";
 
     //Metodo para verificar se o usuário existe na sessão se o ID não é nulo
     public static function getFromSession()
@@ -256,7 +257,7 @@ class User extends Model
                 //Preparando link a ser enviado por e-mail para que o usuário possa alterar sua senha
                 $link = User::URL_SITE."?code=$code";
                 
-                $mailer = new Mailer($data["desemail"], $data["desperson"],"Redefinie senha na DrLEns", "forgot", array(
+                $mailer = new Mailer($data["desemail"], $data["desperson"],"Redefinie senha na DRLens", "forgot", array(
                     "name"=>$data["desperson"],
                     "link"=>$link
                 ));

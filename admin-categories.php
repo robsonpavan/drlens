@@ -1,0 +1,217 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
+use Slim\App; 
+use \rapinformatica\PageAdmin;
+use \rapinformatica\Model\User;
+use \rapinformatica\Model\Category;
+use \rapinformatica\Model\Product;
+
+
+//Rota para ac essar template de categorias
+$app->get("/admin/categories", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+   
+    $categories = Category::listAll();
+    
+    $page = new PageAdmin();
+    
+    $page->setTpl("categories",[
+        'categories'=>$categories
+    ]);
+
+    return $response;
+    
+});
+
+//Rota para cadastrar categorias
+$app->get("/admin/categories/create", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+            
+    $page = new PageAdmin();
+    
+    $page->setTpl("categories-create");
+    
+    return $response;
+});
+
+//Rota efetuar o cadastro da categoria no BD
+$app->post("/admin/categories/create", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+            
+    $category = new Category();
+
+    //Criandos os sets e gets com os dados digitados pelo usuário no formulário
+    $category->setData($_POST);
+    
+    //Salvando a categoria
+    $category->save();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
+//Rota para excluir uma categoria
+$app->get("/admin/categories/{idcategory}/delete", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+    
+    $category = new Category();
+    
+    //Carregando objeto para certificar-se que a categoria ainda existe no BD
+    $category->get((int)$idcategory);
+    
+    //Deletando a categoria
+    $category->delete();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
+//Rota para editar uma categoria
+$app->get("/admin/categories/{idcategory}", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $page = new PageAdmin();
+    
+    //Carregando a página de update
+    $page->setTpl("categories-update", [
+        "category"=>$category->getValues()
+    ]);
+    
+    return $response;
+});
+
+//Rota para efetuar a alteração da categoria
+//Rota para editar uma categoria
+$app->post("/admin/categories/{idcategory}", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    //Alterando o objeto carregado com as informações vindas do formulário
+    $category->setData($_POST);
+    
+    //Salvando as alterações no BD
+    $category->save();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
+
+//Rota para página de acossiação dos produtos com as categorias
+$app->get("/admin/categories/{idcategory}/products", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $page = new PageAdmin();
+    
+    //Carregando a página de update
+    $page->setTpl("categories-products", [
+        "category"=>$category->getValues(),
+        "productsRelated"=>$category->getProducts(),
+        "productsNotRelated"=>$category->getProducts(false)
+    ]);
+    
+    return $response;
+});
+
+//Rota para adição do produtos na categoria
+$app->get("/admin/categories/{idcategory}/products/{idproduct}/add", function(Request $request, Response $response, $args){
+   
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+
+    $idproduct = $args['idproduct'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $product = new Product();
+    
+    $product->get((int)$idproduct);
+    
+    $category->addProduct($product);
+    
+    header("Location: /admin/categories/".$idcategory."/products");
+    exit;
+    
+});
+
+//Rota para remoção do produtos da categoria
+$app->get("/admin/categories/{idcategory}/products/{idproduct}/remove", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+ 
+    $idcategory = $args['idcategory'];
+
+    $idproduc = $args['idproduct'];
+
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $product = new Product();
+    
+    $product->get((int)$idproduct);
+    
+    $category->removeProduct($product);
+    
+    header("Location: /admin/categories/".$idcategory."/products");
+    exit;
+    
+});

@@ -224,10 +224,40 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
           </li>
           <li class="nav-item">
+            <li class="nav-item menu-is-opening menu-open">
+              <a href="#" class="nav-link active">
+                <i class="nav-icon fa-solid fa-users"></i>
+                <p>
+                  Categorias e produtos
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview" style="display: block;">
+                <li class="nav-item">
+                  <a href="/admin/categories" class="nav-link active">                    
+                    <i class="fa-solid fa-layer-group"></i>
+                    <p>Listar categorias</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/users/create" class="nav-link">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <p>Cadastrar usuário</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="admin/users-update" class="nav-link">
+                    <i class="fa-solid fa-user-pen"></i>
+                    <p>Alterar usuário</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Simple Link
+                Cadas
                 <span class="right badge badge-danger">New</span>
               </p>
             </a>

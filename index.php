@@ -12,6 +12,7 @@ use Slim\App;
 use rapinformatica\Page;
 use rapinformatica\PageAdmin;
 use rapinformatica\Model\User;
+use rapinformatica\Model\Category;
 require_once("vendor/autoload.php");
 
 
@@ -235,7 +236,7 @@ $app->get("/admin/forgot", function (Request $request, Response $response, $args
 //Rota para enviar o e-mail
 $app->post("/admin/forgot", function (Request $request, Response $response, $args) {
 
-	//Método da estático classe User para receber o e-mail do usuário passado pela pági a do esqueci a senha (forgot)
+	//Método da estático classe User para receber o e-mail do usuário passado pela página do esqueci a senha (forgot)
 	$user = User::getForgot($_POST["email"]);
 
 	header("Location: /admin/forgot/sent");
@@ -244,6 +245,193 @@ $app->post("/admin/forgot", function (Request $request, Response $response, $arg
     return $response;
 
 });
+
+//Rota para página que envia e-mail para resetar a senha
+$app->get("/admin/forgot/sent", function (Request $request, Response $response, $args) {
+
+	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+	$page = new PageAdmin([
+		"header" => false,
+		"footer" => false,
+	]);
+	//Carregando a ágina de login -executando setTPL
+	$page->setTpl("forgot-sent");
+
+    return $response;
+
+});
+
+//Rota para acessar página para resetar a senha
+$app->get("/admin/forgot/reset", function (Request $request, Response $response, $args) {
+
+	$user = User::validForgotDecrypt($_GET["code"]);
+
+	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+	$page = new PageAdmin([
+		"header" => false,
+		"footer" => false,
+	]);
+	//Carregando a página de login -executando setTPL e passando os parâmetros solicitados pela página de reset
+	$page->setTpl("forgot-reset", array(
+		"name" => $user["desperson"],
+		"code" => $_GET["code"],
+	));
+
+    return $response;
+});
+
+//Rota para chamar o metodos que altera a senha e redireciona para a página de confirmação de alteração de senha
+$app->post("/admin/forgot/reset", function (Request $request, Response $response, $args) {
+
+	//Validando o código de recovery (idrecovery)
+	$forgot = User::validForgotDecrypt($_POST["code"]);
+	//Registrando no BD que a alteração da senha foi realizada
+	User::setForgotUsed($forgot["idrecovery"]);
+
+	$user = new User();
+	//Buscando as informaçoes do usuário
+	$user->get((int) $forgot["iduser"]);
+	//Criptografando a senha função password_hash(senha, Padrão de criptografia, custo poder computacional empregado para gerar o hash
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+		"cost" => 12,
+	]);
+
+	//Chamando método para alterar a senha
+	$user->setPassword($password);
+
+	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+	$page = new PageAdmin([
+		"header" => false,
+		"footer" => false,
+	]);
+	//Carregando a página informando que o a senha foi alterada com sucesso
+	$page->setTpl("forgot-reset-success");
+
+    return $response;
+});
+
+//Rota para ac essar template de categorias
+$app->get("/admin/categories", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+   
+    $categories = Category::listAll();
+    
+    $page = new PageAdmin();
+    
+    $page->setTpl("categories",[
+        'categories'=>$categories
+    ]);
+
+    return $response;
+    
+});
+
+//Rota para cadastrar categorias
+$app->get("/admin/categories/create", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+            
+    $page = new PageAdmin();
+    
+    $page->setTpl("categories-create");
+    
+    return $response;
+});
+
+//Rota efetuar o cadastro da categoria no BD
+$app->post("/admin/categories/create", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+            
+    $category = new Category();
+
+    //Criandos os sets e gets com os dados digitados pelo usuário no formulário
+    $category->setData($_POST);
+    
+    //Salvando a categoria
+    $category->save();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
+//Rota para excluir uma categoria
+$app->get("/admin/categories/{idcategory}/delete", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+    
+    $category = new Category();
+    
+    //Carregando objeto para certificar-se que a categoria ainda existe no BD
+    $category->get((int)$idcategory);
+    
+    //Deletando a categoria
+    $category->delete();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
+//Rota para editar uma categoria
+$app->get("/admin/categories/{idcategory}", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $page = new PageAdmin();
+    
+    //Carregando a página de update
+    $page->setTpl("categories-update", [
+        "category"=>$category->getValues()
+    ]);
+    
+    return $response;
+});
+
+//Rota para efetuar a alteração da categoria
+//Rota para editar uma categoria
+$app->post("/admin/categories/{idcategory}", function(Request $request, Response $response, $args){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+
+    $idcategory = $args['idcategory'];
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    //Alterando o objeto carregado com as informações vindas do formulário
+    $category->setData($_POST);
+    
+    //Salvando as alterações no BD
+    $category->save();
+    
+    header("Location: /admin/categories");
+    exit;
+    
+    return $response;
+});
+
 
 // Run app
 $app->run();

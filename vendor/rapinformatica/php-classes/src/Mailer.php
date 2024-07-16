@@ -11,14 +11,14 @@ namespace rapinformatica;
  * 
  */
 use Rain\Tpl;
-use PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailer {
 
     //Contante com usuário utilizado para enviar o e-mail
-    const USERNAME = "robsonp";
-    const PASSWORD = "su3ht@m260885A";
-    const NAME_FROM = "Robson Store";
+    const USERNAME = "robsonalvespavan@gmail.com";
+    const PASSWORD = "wryc dinv hopl cxht";
+    const NAME_FROM = "DrLens Store";
 
     private $mail;
 
@@ -45,16 +45,16 @@ class Mailer {
         $html = $tpl->draw($tplName, true);
 
         //Create a new PHPMailer instance
-        $this->mail = new \PHPMailer;
+        $this->mail = new PHPMailer;
         //Tell PHPMailer to use SMTP
         $this->mail->isSMTP();
         //Enable SMTP debugging
         $this->mail->SMTPDebug = 0;
         //Set the hostname of the mail server
         // $this->mail->Host = 'smtp.gmail.com';
-        $this->mail->Host = 'mail.robsonpavan.com';
-        // $this->mail->Port = 587;
-        $this->mail->Port = 465;
+        $this->mail->Host = 'smtp.gmail.com';
+        $this->mail->Port = 587;
+        //$this->mail->Port = 465;
         //Set the encryption system to use - ssl (deprecated) or tls
         $this->mail->SMTPSecure = 'tls';
         //Whether to use SMTP authentication

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -26,20 +26,21 @@
 <!-- Automatic element centering -->
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
-    <a href="/res/admin/index2.html"><b>DR/b>Lens</a>
+    <a href="/res/admin/index2.html"><b>Admin</b>LTE</a>
   </div>
 
   <!-- /.lockscreen-item -->
   <div class="help-block text-center">
     <div class="callout callout-success">
-      <h4>Senha Alterada!</h4>
-      <p>Tente fazer o login com sua nova senha.<br><a href="/admin/login">Clique aqui</a> para fazer o login.</p>
+      <h4>E-mail enviado!</h4>
+
+      <p>Verifique as instruções no seu e-mail.</p>
     </div>
   </div>
-  <!--<div class="lockscreen-footer text-center">
-    Copyright &copy; 2024 <b><a href="http://rapinormatica.com.br" class="text-black">RAP Informática</a></b><br>
+  <div class="lockscreen-footer text-center">
+    Copyright &copy; 2014-2016 <b><a href="http://almsaeedstudio.com" class="text-black">Almsaeed Studio</a></b><br>
     All rights reserved
-  </div>-->
+  </div>
 </div>
 <!-- /.center -->
 
