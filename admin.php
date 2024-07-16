@@ -6,11 +6,15 @@
  * and open the template in the editor.
  */
 
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
+use Slim\App; 
 use \rapinformatica\Model\User;
 use \rapinformatica\PageAdmin;
 
 //Criando rota para interface de administração
-$app->get('/admin', function () {
+$app->get('/admin', function (Request $request, Response $response, $args) {
 
 	//Metodo estático para verificar (testar) o login do uauário
 	User::verifyLogin();
@@ -20,10 +24,11 @@ $app->get('/admin', function () {
 	//Carregando o Index -executando setTPL
 	$page->setTpl("index");
 	//Ao final do comado carrega o Footer pois o destruct roda automáricamente no final - executando o destruct
+	return $response;
 });
 
 //Criando rota para acesso a página de login
-$app->get('/admin/login', function () {
+$app->get('/admin/login', function (Request $request, Response $response, $args) {
 	//Ao instanciar o objeto page é executado o construct da classe PageAdmin que extende a classe Pager,
 	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
 	$page = new PageAdmin([
@@ -33,10 +38,11 @@ $app->get('/admin/login', function () {
 	//Carregando a ágina de login -executando setTPL
 	$page->setTpl("login");
 	//Ao final do comado carrega o Footer pois o destruct roda automáricamente no final - executando o destruct
+	return $response;
 });
 
 //Rota que será acionada pela página de logi (post do formulário) para realização do login no site administrativo
-$app->post('/admin/login', function () {
+$app->post('/admin/login', function (Request $request, Response $response, $args) {
 
 	//Executando método estático login da classe User para realizar a autenticação do usuário (estão sendo passados o login e a senha capturados no formulário de login
 	//A váriável $_POST["login"] captura o login do usuário e o parâemtro login passado na variável é o nome do campo que recebe o login (nome do campo input da página html)
@@ -45,10 +51,11 @@ $app->post('/admin/login', function () {
 	//Redirecionando para página principal da interface de administração (index.html) caso a autenticação tenha sido bem sucedida
 	header("Location: /admin");
 	exit; //Parando a execução
+	return $response;
 });
 
 //Rota para página de logout
-$app->get("/admin/logout", function () {
+$app->get("/admin/logout", function (Request $request, Response $response, $args) {
 
 	//Executando o método estático para realizar logout
 	User::logout();
@@ -56,10 +63,11 @@ $app->get("/admin/logout", function () {
 	header("Location: /admin/login");
 	//Parando a execução para que a próxima página seja carregada
 	exit;
+	return $response;
 });
 
 //Rota perdia senha forgot
-$app->get("/admin/forgot", function () {
+$app->get("/admin/forgot", function (Request $request, Response $response, $args) {
 
 	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
 	$page = new PageAdmin([
@@ -69,10 +77,11 @@ $app->get("/admin/forgot", function () {
 	//Carregando a ágina de login -executando setTPL
 	$page->setTpl("forgot");
 
+	return $response;
 });
 
 //Rota para enviar o e-mail
-$app->post("/admin/forgot", function () {
+$app->post("/admin/forgot", function (Request $request, Response $response, $args) {
 
 	//Método da estático classe User para receber o e-mail do usuário passado pela pági a do esqueci a senha (forgot)
 	$user = User::getForgot($_POST["email"]);
@@ -80,10 +89,11 @@ $app->post("/admin/forgot", function () {
 	header("Location: /admin/forgot/sent");
 	exit;
 
+	return $response;
 });
 
 //Rota para página que envia e-mail para resetar a senha
-$app->get("/admin/forgot/sent", function () {
+$app->get("/admin/forgot/sent", function (Request $request, Response $response, $args) {
 
 	//como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
 	$page = new PageAdmin([
@@ -93,10 +103,11 @@ $app->get("/admin/forgot/sent", function () {
 	//Carregando a ágina de login -executando setTPL
 	$page->setTpl("forgot-sent");
 
+	return $response;
 });
 
 //Rota para acessar página para resetar a senha
-$app->get("/admin/forgot/reset", function () {
+$app->get("/admin/forgot/reset", function (Request $request, Response $response, $args) {
 
 	$user = User::validForgotDecrypt($_GET["code"]);
 
@@ -111,10 +122,11 @@ $app->get("/admin/forgot/reset", function () {
 		"code" => $_GET["code"],
 	));
 
+	return $response;
 });
 
 //Rota para chamar o metodos que altera a senha e redireciona para a página de confirmação de alteração de senha
-$app->post("/admin/forgot/reset", function () {
+$app->post("/admin/forgot/reset", function (Request $request, Response $response, $args) {
 
 	//Validando o código de recovery (idrecovery)
 	$forgot = User::validForgotDecrypt($_POST["code"]);
@@ -140,4 +152,5 @@ $app->post("/admin/forgot/reset", function () {
 	//Carregando a página informando que o a senha foi alterada com sucesso
 	$page->setTpl("forgot-reset-success");
 
+	return $response;
 });

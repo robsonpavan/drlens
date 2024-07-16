@@ -5,13 +5,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
+use Slim\App;
 use \rapinformatica\PageAdmin;
 use \rapinformatica\Model\User;
 use \rapinformatica\Model\Product;
 
 //Rota para acessar página de produtos
-$app->get("/admin/products", function () {
+$app->get("/admin/products", function (Request $request, Response $response, $args) {
 
     User::verifyLogin();
 
@@ -22,10 +25,11 @@ $app->get("/admin/products", function () {
     $page->setTpl("products", array(
         "products" => $products
     ));
+    return $response;
 });
 
 //Rota para página de criação de produtos
-$app->get("/admin/products/create", function () {
+$app->get("/admin/products/create", function (Request $request, Response $response, $args) {
 
     User::verifyLogin();
 
@@ -33,10 +37,11 @@ $app->get("/admin/products/create", function () {
 
     //Definindo qual página deverá ser desenhada 
     $page->setTpl("products-create");
+    return $response;
 });
 
 //Rota pra salvar novos produtos
-$app->post("/admin/products/create", function () {
+$app->post("/admin/products/create", function (Request $request, Response $response, $args) {
 
     User::verifyLogin();
 
@@ -52,12 +57,15 @@ $app->post("/admin/products/create", function () {
     //Encaminhando para página que lista os produtos
     header("Location: /admin/products");
     exit;
+    return $response;
 });
 
 //Rota para editar o produto
-$app->get("/admin/products/:idproduct", function ($idproduct) {
+$app->get("/admin/products/{idproduct}", function (Request $request, Response $response, $args) {
 
     User::verifyLogin();
+
+    $idproduct = $args['idproduct'];
 
     $product = new Product();
 
@@ -69,11 +77,13 @@ $app->get("/admin/products/:idproduct", function ($idproduct) {
     $page->setTpl("products-update", array(
         "product" => $product->getValues()
     ));
+    return $response;
 });
 
 //Rota para salvar as alterações no produto
-$app->post("/admin/products/:idproduct", function($idproduct) {
+$app->post("/admin/products/{idproduct}", function(Request $request, Response $response, $args) {
     User::verifyLogin();
+    $idproduct = $args['idproduct'];
     $product = new Product();
     $product->get((int) $idproduct);
     $product->setData($_POST);
@@ -81,15 +91,18 @@ $app->post("/admin/products/:idproduct", function($idproduct) {
     $product->setPhoto($_FILES["file"]);
     header('Location: /admin/products');
     exit;
+    return $response;
 });
 
 //Rota para excluir os produtos]
-$app->get("/admin/products/:idproduct/delete", function($idproduct) {
+$app->get("/admin/products/{idproduct}/delete", function(Request $request, Response $response, $args) {
     User::verifyLogin();
+    $idproduct = $args['idproduct'];
     $product = new Product();
     $product->get((int) $idproduct);
     $product->delete();
     header('Location: /admin/products');
     exit;
+    return $response;
 });
 

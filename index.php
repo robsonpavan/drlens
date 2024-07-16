@@ -432,6 +432,48 @@ $app->post("/admin/categories/{idcategory}", function(Request $request, Response
     return $response;
 });
 
+//Rota para acesso às categorias acessadas via site
+$app->get("/categories/{idcategory}", function (Request $request, Response $response, $args){
+
+    $idcategory = $args['idcategory'];
+    
+    //$pag = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+    
+    $category = new Category();
+
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);  
+    /*
+    //Recebendo os produtos e as informaçõs de paginação
+    $pagination = $category->getProductsPage($pag);
+    
+    //Array criado para enviar o link de navegação da paginação e o número da página a ser acessado
+    $pages = [];
+    //Populando array
+    for ($i = 1; $i <= $pagination['pages']; $i++) {
+        array_push($pages, [
+            'link'=>'/categories/'.$category->getidcategory().'?page='.$i,
+            'page'=>$i
+        ]);
+    }
+    */
+    
+    $page = new Page();
+    
+    $page->setTpl("category", [
+        'category'=>$category->getValues(),
+        'products'=>[]
+    ]);
+
+    //Carregando a página da categoria, e passando as informações referentes a categoria selecionada
+   /* $page->setTpl("category", [
+        'category'=>$category->getValues(),
+        'products'=> $pagination['data'],
+        'pages'=>$pages
+    ]); */
+       
+    return $response;
+});
 
 // Run app
 $app->run();

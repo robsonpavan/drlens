@@ -5,12 +5,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
+use Slim\App;
 use \rapinformatica\PageAdmin;
 use \rapinformatica\Model\User;
 
 //Rota para tela que listará todos os usuários
-$app->get("/admin/users", function () {
+$app->get("/admin/users", function (Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do usuário (se ele está logado)
     User::verifyLogin();
@@ -27,10 +30,11 @@ $app->get("/admin/users", function () {
     $page->setTpl("users", array(
         "users" => $users
     ));
+    return $response;
 });
 
 //Rota para abrir a tela de createuser para cadastrar um um novo usuário
-$app->get("/admin/users/create", function () {
+$app->get("/admin/users/create", function (Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do uauário
     User::verifyLogin();
@@ -41,15 +45,18 @@ $app->get("/admin/users/create", function () {
     //Definindo qual página deverá ser desenhada 
     //(Como não foram passados argumentos ao instânciar o objeto PageAdmin carregará com as configurações padrão e carregará no construct o headre e no destruct o footer
     $page->setTpl("users-create");
+    return $response;
 });
 
 //Rota para deletar um usuário. No momento de configurar a rota, se o caminho da página possuir um "padrão" (uma variável) semelhante ao de outra rota 
 //a rota que tiver uma descrição após a váriável deve vir primeiro. Exemplo: A rota delete tem que estar antes da de salvar alteração porque senão a rota delete nuca será executata
-$app->get("/admin/users/:iduser/delete", function($iduser) {
+$app->get("/admin/users/{iduser}/delete", function(Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do uauário
     User::verifyLogin();
     
+    $iduser = $args['iduser'];
+
     $user = new User();
     
     //Buscando as informações do usuário existentes no BD
@@ -61,15 +68,17 @@ $app->get("/admin/users/:iduser/delete", function($iduser) {
     //Encaminhando para página que lista os usuário após inserção do novo usuário
     header("Location: /admin/users");
     exit;
-    
+    return $response;
 });
 
 //Rota para update de usuários. Nessa rota é definido um padrão (inserindo :iduser) para receber o ID do usuário que será atualizado, 
 //o valor passado no padrão :iduser será recebido na variável instanciada como parâmetro na função
-$app->get("/admin/users/:iduser", function ($iduser) {
+$app->get("/admin/users/{iduser}", function (Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do uauário
     User::verifyLogin();
+
+    $iduser = $args['iduser'];
 
     $user = new User();
     
@@ -84,11 +93,12 @@ $app->get("/admin/users/:iduser", function ($iduser) {
     $page->setTpl("users-update", array(
         "user"=>$user->getValues()
     ));
+    return $response;
 });
 
 //Rota para salvar os dados do novo usuário (metodos para realizar o insert do usuário). 
 //Essa rota tem o mesmo nome que uma outra acessada via get, o metodo de acesso definirá qual rota será seguida (post essa rota get a outra)
-$app->post("/admin/users/create", function() {
+$app->post("/admin/users/create", function(Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do uauário
     User::verifyLogin();
@@ -109,15 +119,17 @@ $app->post("/admin/users/create", function() {
     //Encaminhando para página que lista os usuário após inserção do novo usuário
     header("Location: /admin/users");
     exit;
-    
+    return $response;
 });
 
 //Rota para salvar a edição dos dados alterados do usuário.
-$app->post("/admin/users/:iduser", function($iduser) {
+$app->post("/admin/users/{iduser}", function(Request $request, Response $response, $args) {
 
     //Metodo estático para verificar (testar) o login do uauário
     User::verifyLogin();
     
+    $iduser = $args['iduser'];
+
     $user = new User();
     
     //Carregando as informações existentes do usuários no BD
@@ -134,4 +146,5 @@ $app->post("/admin/users/:iduser", function($iduser) {
     //Encaminhando para página que lista os usuário após inserção do novo usuário
     header("Location: /admin/users");
     exit;
+    return $response;
 });
