@@ -103,8 +103,8 @@ class Product extends Model {
             $url = "/res/site/img/products/" . $this->getidproduct() . ".jpg";
             
         } else {
-            $url = "/res/site/img/product.jpg";
-        }
+            $url = "/res/site/img/products/product.jpg";
+        }             
         return $this->setdesphoto($url);
     } //Fim do método checkPhotos
     
@@ -129,13 +129,13 @@ class Product extends Model {
             switch ($extension) {
                 case "jpg":
                 case "jpeg":
-                    $image = imagecreatefromjpeg($file["tmp_name"]);
+                    $image = imagecreatefromjpeg($file['tmp_name']);
                     break;
                 case "gif":
-                    $image = imagecreatefromgif($file["tmp_name"]);
+                    $image = imagecreatefromgif($file['tmp_name']);
                     break;
                 case "png":
-                    $image = imagecreatefrompng($file["tmp_name"]);
+                    $image = imagecreatefrompng($file['tmp_name']);
                     break;
             }
 

@@ -240,9 +240,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="/admin/users/create" class="nav-link">
+                  <a href="/admin/products" class="nav-link">
                     <i class="fa-solid fa-user-plus"></i>
-                    <p>Cadastrar usuário</p>
+                    <p>Listar Produtos</p>
                   </a>
                 </li>
                 <li class="nav-item">

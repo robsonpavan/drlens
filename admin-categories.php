@@ -198,7 +198,7 @@ $app->get("/admin/categories/{idcategory}/products/{idproduct}/remove", function
  
     $idcategory = $args['idcategory'];
 
-    $idproduc = $args['idproduct'];
+    $idproduct = $args['idproduct'];
 
     $category = new Category();
     
