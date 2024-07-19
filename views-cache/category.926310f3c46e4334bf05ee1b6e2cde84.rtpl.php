@@ -10,7 +10,7 @@
     </div>
 </div>
 
-div class="single-product-area">
+<div class="single-product-area">
     <div class="zigzag-bottom"></div>
     <div class="container">
         <div class="row">
@@ -247,7 +247,7 @@ div class="single-product-area">
                     </div>                       
                 </div>
             </div>
-        </div>-->
+        </div>
         
         <div class="row">
             <div class="col-md-12">
@@ -275,4 +275,4 @@ div class="single-product-area">
             </div>
         </div>
     </div>
-</div> 
+</div> -->
