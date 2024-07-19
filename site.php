@@ -71,7 +71,7 @@ $app->get("/categories/{idcategory}", function (Request $request, Response $resp
 //Rota para acessar os detalhes do produto
 $app->get("/products/{desurl}", function(Request $request, Response $response, $args){
     
-    $desurl = $args['deluser'];
+    $desurl = $args['desurl'];
 
     $product = new Product();
     
@@ -88,6 +88,7 @@ $app->get("/products/{desurl}", function(Request $request, Response $response, $
     return $response;
 });
 
+//Rota para acessar o carrinho
 $app->get("/cart", function (Request $request, Response $response, $args){
     
     $cart = Cart::getFromSession();
